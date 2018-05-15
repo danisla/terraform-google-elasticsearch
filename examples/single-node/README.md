@@ -32,6 +32,26 @@ test -z DEVSHELL_GCLOUD_CONFIG && gcloud auth application-default login
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 ```
 
+## Configure remote backend
+
+Configure Terraform [remote backend](https://www.terraform.io/docs/backends/types/gcs.html) for the state file.
+
+```
+BUCKET=YOUR_BUCKET_NAME
+PREFIX=YOUR_BUCKET_PREFIX
+```
+
+```
+cat > backend.tf <<EOF
+terraform {
+  backend "gcs" {
+    bucket     = "${BUCKET}"
+    prefix     = "${PREFIX}"
+  }
+}
+EOF
+```
+
 ## Run Terraform
 
 ```
