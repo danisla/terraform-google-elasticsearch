@@ -87,3 +87,11 @@ variable "bastion_image_project" {
 variable "bastion_machine_type" {
   default = "n1-standard-1"
 }
+
+variable "bastion_disk_size" {
+  default = 10
+}
+
+variable "bastion_disk_type" {
+  default = "pd-ssd"
+}

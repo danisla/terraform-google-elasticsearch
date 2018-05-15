@@ -12,6 +12,8 @@ module "bastion" {
   subnetwork         = "${google_compute_subnetwork.default.name}"
   target_tags        = ["${var.cluster_name}-bastion", "${var.cluster_name}-external"]
   machine_type       = "${var.bastion_machine_type}"
+  disk_size_gb       = "${var.bastion_disk_size}"
+  disk_type          = "${var.bastion_disk_type}"
   name               = "${var.cluster_name}-bastion"
   compute_image      = "${data.google_compute_image.bastion.self_link}"
   http_health_check  = false
