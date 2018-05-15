@@ -32,6 +32,14 @@ test -z DEVSHELL_GCLOUD_CONFIG && gcloud auth application-default login
 export GOOGLE_PROJECT=$(gcloud config get-value project)
 ```
 
+## Run Terraform
+
+```
+terraform init
+terraform plan
+terraform apply
+```
+
 ## Testing
 
 SSH into the Kibana host with port forwarding to Cerebro and Kibana:
@@ -47,14 +55,6 @@ Open a local browser to view Cerebro and Kibana:
 `walkthrough spotlight-pointer devshell-web-preview-button "Open Web Preview and change port to 9000"`
 
 `walkthrough spotlight-pointer devshell-web-preview-button "Open Web Preview and change port to 5601"`
-
-## Run Terraform
-
-```
-terraform init
-terraform plan
-terraform apply
-```
 
 ## Cleanup
 
