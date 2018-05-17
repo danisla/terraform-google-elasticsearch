@@ -124,7 +124,7 @@ resource "google_compute_firewall" "cluster" {
     ports    = ["9200", "9300"]
   }
 
-  source_tags = ["${var.cluster_name}"]
+  source_tags = ["${var.cluster_name}", "${var.cluster_name}-external"]
   target_tags = ["${var.cluster_name}"]
 }
 
