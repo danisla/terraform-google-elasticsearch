@@ -29,6 +29,14 @@ path.data: ${elasticsearch_data_dir}
 path.logs: ${elasticsearch_logs_dir}
 EOF
 
+# Set the zone for shard allocation awareness.
+ZONE=$(basename $(curl -sf -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/zone)) 
+echo "node.attr.zone: $ZONE" >> /etc/elasticsearch/elasticsearch.yml
+
+if [[ "${master}" == "true" ]]; then
+    echo "cluster.routing.allocation.awareness.attributes: zone" >> /etc/elasticsearch/elasticsearch.yml
+fi
+
 cat <<'EOF' >>/etc/security/limits.conf
 
 # allow user 'elasticsearch' mlockall
