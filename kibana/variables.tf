@@ -49,6 +49,21 @@ variable "machine_type" {
   default     = "n1-standard-2"
 }
 
+variable "disk_auto_delete" {
+  description = "Whether or not the disk should be auto-deleted, should not be used in production."
+  default     = true
+}
+
+variable "disk_type" {
+  description = "The GCE disk type. Can be either pd-ssd, local-ssd, or pd-standard."
+  default     = "pd-ssd"
+}
+
+variable "disk_size_gb" {
+  description = "The size of the disk in gigabytes. If not specified, it will inherit the size of its base image."
+  default     = 0
+}
+
 variable "num_nodes" {
   description = "Number of nodes in the instance group."
   default     = 1
