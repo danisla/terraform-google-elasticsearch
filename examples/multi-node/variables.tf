@@ -84,12 +84,16 @@ variable "bastion_image_project" {
   default = "centos-cloud"
 }
 
+variable "bastion_image_url" {
+  default = ""
+}
+
 variable "bastion_machine_type" {
-  default = "n1-standard-1"
+  default = "n1-standard-4"
 }
 
 variable "bastion_disk_size" {
-  default = 10
+  default = 100
 }
 
 variable "bastion_disk_type" {

@@ -15,7 +15,7 @@ module "bastion" {
   disk_size_gb       = "${var.bastion_disk_size}"
   disk_type          = "${var.bastion_disk_type}"
   name               = "${var.cluster_name}-bastion"
-  compute_image      = "${data.google_compute_image.bastion.self_link}"
+  compute_image      = "${var.bastion_image_url == "" ? data.google_compute_image.bastion.self_link : var.bastion_image_url}"
   http_health_check  = false
   service_port       = "80"
   service_port_name  = "http"
