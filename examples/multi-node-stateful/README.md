@@ -42,7 +42,7 @@ Configure Terraform [remote backend](https://www.terraform.io/docs/backends/type
 BUCKET=${GOOGLE_PROJECT}-terraform
 gsutil mb gs://${BUCKET}
 
-PREFIX=tf-es-multi-node/state
+PREFIX=tf-es-multi-node-stateful/state
 ```
 
 ```
