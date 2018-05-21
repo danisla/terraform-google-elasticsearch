@@ -58,6 +58,7 @@ module "kibana" {
   region            = "${var.region}"
   zones             = ["${var.zones}"]
   num_nodes         = 1
+  disk_size_gb      = 100
   node_tags         = ["${var.cluster_name}"]
   elasticsearch_url = "http://${google_compute_address.es.address}:9200"
   network           = "${google_compute_subnetwork.default.name}"

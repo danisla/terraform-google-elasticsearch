@@ -80,6 +80,19 @@ Open a local browser to view Cerebro and Kibana:
 
 `walkthrough spotlight-pointer devshell-web-preview-button "Open Web Preview and change port to 5601"`
 
+Install [esrally](https://github.com/elastic/rally) and run benchmark
+
+```
+sudo yum install -y centos-release-scl && sudo yum install -y gcc python34.x86_64 python34-devel.x86_64 python34-pip.noarch java-1.8.0-openjdk java-1.8.0-openjdk-devel git19 tmux && sudo pip3 install --upgrade pip && sudo pip3 install esrally
+
+scl enable git19 bash
+esrally configure
+
+INDEX_NODES="$(gcloud compute instances list --filter=name~tf-es-cluster-indexing- --format='value(networkInterfaces[0].networkIP)' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/:9200,/g'):9200"
+
+esrally --track=pmc --target-hosts="${INDEX_NODES}" --pipeline=benchmark-only
+```
+
 ## Cleanup
 
 Exit the bastion ssh session:
