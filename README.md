@@ -36,7 +36,28 @@ Example multi-node cluster deployment
 
 ![architecture diagram](https://raw.githubusercontent.com/danisla/terraform-google-elasticsearch/master/examples/multi-node/diagram.png)
 
+### [multi-node-stateful](./examples/multi-node-stateful)
+
+[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/danisla/terraform-google-elasticsearch&page=editor&tutorial=examples/multi-node-stateful/README.md)
+
+Similar example as the multi-node cluster deployment but with data nodes outside of a instance group manager.
+
+![architecture diagram](https://raw.githubusercontent.com/danisla/terraform-google-elasticsearch/master/examples/multi-node/diagram.png)
+
 ## Module Best Practices
 
 - Rebuild disk images using the [packer repository](https://github.com/danisla/elasticsearch-cloud-deploy/tree/gcp).
 - Set `disk_auto_delete = false` in production to avoid losing data when instances are recreated.
+
+### Scaling
+
+In the [multi-node example](./examples/multi-node) each node tier can be scaled independently. When scaling _UP_, simply, increase the number of nodes using the `num_nodes` module variable. The new nodes will be created by the Regional Instance Group Manager and the index shards will self-balance.
+
+### Upgrading
+
+TBD
+
+### Monitoring
+
+TBD
+ 

@@ -1,6 +1,6 @@
 # Multi node Elasticsearch Cluster with Stateful Data Nodes
 
-[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/danisla/terraform-google-elasticsearch&page=editor&tutorial=examples/multi-node/README.md)
+[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/danisla/terraform-google-elasticsearch&page=editor&tutorial=examples/multi-node-stateful/README.md)
 
 This example creates a multi node Elasticsearch cluster with master, data and client nodes with no external IPs and a NAT gateway.
 
@@ -20,7 +20,7 @@ source ${HOME}/.bashrc
 ## Setup Environment
 
 ```
-cd examples/multi-node
+cd examples/multi-node-stateful
 ```
 
 Set the project, replace `YOUR_PROJECT` with your project ID:
