@@ -41,10 +41,6 @@ variable "data_num_nodes" {
   default = 5
 }
 
-variable "attached_disk_1_size_gb" {
-  default = 50
-}
-
 variable "attached_disk_1" {
   type = "map"
 
