@@ -86,3 +86,7 @@ output "kibana_instance" {
 output "kibana" {
   value = "gcloud compute ssh --ssh-flag=\"-A -L :9000:localhost:9000 -L :5601:localhost:5601\" $(terraform output kibana_instance)"
 }
+
+output "cluster_name" {
+  value = "${var.cluster_name}"
+}
