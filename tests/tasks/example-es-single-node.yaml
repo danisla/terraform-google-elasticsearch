@@ -14,7 +14,7 @@
 
 platform: linux
 inputs:
-- name: terraform-google-nat-gateway
+- name: terraform-google-elasticsearch
 outputs:
 - name: email
 image_resource:
