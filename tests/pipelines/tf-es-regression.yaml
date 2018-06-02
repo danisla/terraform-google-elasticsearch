@@ -27,6 +27,7 @@ jobs:
 
   - task: run-example-single-node
     params:
+      src_dir: git
       service_account_json: {{service_account_json}}
       project_id: {{project_id}}
       zone: us-west1-b
@@ -59,6 +60,7 @@ jobs:
   
   - task: run-example-single-node-pr
     params:
+      src_dir: git-pull-requests
       service_account_json: {{service_account_json}}
       project_id: {{project_id}}
       zone: us-east4-b
