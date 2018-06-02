@@ -14,7 +14,10 @@
 
 platform: linux
 inputs:
-- name: terraform-google-elasticsearch
+- name: git
+  optional: true
+- name: git-pull-requests
+  optional: true
 outputs:
 - name: email
 image_resource:
@@ -47,8 +50,9 @@ run:
     gcloud config set project $project_id
     gcloud config set compute/zone $zone
 
-    cd terraform-google-elasticsearch/
-
+    test -d git && cd git
+    test -d git-pull-requests && cd git-pull-requests
+    
     # Setup email
     EMAIL=${PWD}/../email
     echo "terraform-google-elasticsearch/${env_name}: Failed to run example" > ${EMAIL}/subject-failed
