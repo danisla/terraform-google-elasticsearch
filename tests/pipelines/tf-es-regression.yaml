@@ -42,7 +42,7 @@ jobs:
       params:
         subject: email/subject-failed
         body: email/body-failed
-    file: terraform-google-elasticsearch/tests/tasks/example-es-single-node.yaml
+    file: git/tests/tasks/example-es-single-node.yaml
 
 ###
 # run-example-single-node-prs
@@ -50,6 +50,9 @@ jobs:
 - name: run-example-single-node-prs
   serial: true
   plan:
+  - get: git
+    trigger: false
+
   - get: git-pull-requests
     trigger: true
     version: every
@@ -71,7 +74,7 @@ jobs:
       params:
         subject: email/subject-failed
         body: email/body-failed
-    file: terraform-google-elasticsearch/tests/tasks/example-es-single-node.yaml
+    file: git/tests/tasks/example-es-single-node.yaml
 
 ###
 # Resource types
