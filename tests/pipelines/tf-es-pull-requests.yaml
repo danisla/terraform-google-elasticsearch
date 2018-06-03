@@ -15,31 +15,32 @@
 jobs:
 
 ###
-# run-example-single-node
+# run-example-single-node-prs
 ###
-- name: run-example-single-node
+- name: run-example-single-node-prs
   serial: true
   plan:
-  - get: once-a-day
-    trigger: true
-
   - get: git
     trigger: false
 
-  - task: run-example-single-node
+  - get: git-pull-requests
+    trigger: true
+    version: every
+  
+  - task: run-example-single-node-pr
     params:
       git_src: git
-      git_target: git
+      git_target: git-pull-requests
       service_account_json: {{service_account_json}}
       project_id: {{project_id}}
-      zone: us-west1-b
+      zone: us-east4-b
       backend_bucket: {{tf_backend_bucket}}
       backend_prefix: terraform-google-elasticsearch/
-      env_name: tf-ci-es-single-node
-      TF_VAR_network_name: tf-ci-es-single-node
-      TF_VAR_cluster_name: tf-ci-es-single-node
-      TF_VAR_region: us-west1
-      TF_VAR_zones: '["us-west1-b"]'
+      env_name: tf-ci-es-single-node-pr
+      TF_VAR_network_name: tf-ci-es-single-node-pr
+      TF_VAR_cluster_name: tf-ci-es-single-node-pr
+      TF_VAR_region: us-east4
+      TF_VAR_zones: '["us-east4-b"]'
     on_failure:
       put: send-an-email
       params:
@@ -56,6 +57,11 @@ resource_types:
   source:
     repository: pcfseceng/email-resource
 
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+
 ###
 # Resources
 ###
@@ -66,10 +72,12 @@ resources:
     uri: {{tf_es_source_repo}}
     branch: {{tf_es_source_branch}}
 
-- name: once-a-day
-  type: time
+- name: git-pull-requests
+  type: pull-request
   source:
-    interval: 1440m
+    access_token: {{github_access_token}}
+    repo:         ((tf_es_source_github_owner))/((tf_es_source_github_repo))
+    base:         {{tf_es_source_branch}}
 
 - name: send-an-email
   type: email
