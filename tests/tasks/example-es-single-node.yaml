@@ -15,6 +15,8 @@
 platform: linux
 inputs:
 - name: git
+- name: git-pull-requests
+  optional: true
 outputs:
 - name: email
 image_resource:
@@ -57,7 +59,7 @@ run:
 
     # Always destroy on exit.
     function cleanup {
-      cd ${TEST_DIR}/ && terraform destroy -input=false -lock=false -auto-approve
+      cd ${TEST_DIR}/ && terraform destroy -no-color -input=false -lock=false -auto-approve
     }
     trap cleanup EXIT
 
@@ -90,10 +92,10 @@ run:
     EOF
     
     # Run Terraform
-    terraform init -upgrade=true
+    terraform init -no-color -upgrade=true
     terraform workspace select ${env_name} || terraform workspace new ${env_name}
-    terraform plan
-    terraform apply -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
+    terraform plan -no-color
+    terraform apply -no-color -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
 
     ### Begin pull request test
     if [[ "${git_src}" != "${git_target}" ]]; then
@@ -106,8 +108,8 @@ run:
       cd ${PR_TEST_DIR}
 
       # Run Terraform
-      terraform init -upgrade=true
+      terraform init -no-color -upgrade=true
       terraform workspace select ${env_name} || terraform workspace new ${env_name}
-      terraform plan
-      terraform apply -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
+      terraform plan -no-color
+      terraform apply -no-color -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
     fi
