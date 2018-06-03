@@ -97,13 +97,13 @@ run:
 
     ### Begin pull request test
     if [[ "${git_src}" != "${git_target}" ]]; then
-      OLD_TEST_DIR="${TEST_DIR}"
-      TEST_DIR="${BASE_DIR}/${git_target}/${EXAMPLE_DIR}"
+      
+      PR_TEST_DIR="${BASE_DIR}/${git_target}/${EXAMPLE_DIR}"
 
       # Copy remote backend
-      cp "${OLD_TEST_DIR}/backend.tf" "${TEST_DIR}/"
+      cp "${TEST_DIR}/backend.tf" "${PR_TEST_DIR}/"
 
-      cd ${TEST_DIR}
+      cd ${PR_TEST_DIR}
 
       # Run Terraform
       terraform init -upgrade=true
