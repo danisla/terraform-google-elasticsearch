@@ -51,6 +51,16 @@ jobs:
 # Resource types
 ###
 resource_types:
+- name: git
+  type: docker-image
+  source:
+    repository: concourse/git-resource
+
+- name: time
+  type: docker-image
+  source:
+    repository: concourse/time-resource
+
 - name: email
   type: docker-image
   source:
