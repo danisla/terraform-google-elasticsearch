@@ -15,8 +15,6 @@
 platform: linux
 inputs:
 - name: git
-- name: git-pull-requests
-  # optional: true # flag not available until concourse 3.9.x
 outputs:
 - name: email
 image_resource:
