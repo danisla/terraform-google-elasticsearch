@@ -16,6 +16,7 @@ platform: linux
 inputs:
 - name: git
 - name: git-pull-requests
+  optional: true
 outputs:
 - name: email
 image_resource:
@@ -24,7 +25,8 @@ image_resource:
     repository: google/cloud-sdk
     tag: alpine
 params:
-  src_dir:
+  git_src:
+  git_target:
   service_account_json:
   project_id:
   backend_bucket:
@@ -49,33 +51,37 @@ run:
     gcloud config set project $project_id
     gcloud config set compute/zone $zone
 
-    cd ${src_dir}
-    
+    BASE_DIR=${PWD}
+
     # Setup email
-    EMAIL=${PWD}/../email
+    EMAIL=${BASE_DIR}/email
     echo "terraform-google-elasticsearch/${env_name}: Failed to run example" > ${EMAIL}/subject-failed
     git --no-pager show > ${EMAIL}/body-failed
 
-    # Env for terraform google provider
-    export GOOGLE_APPLICATION_CREDENTIALS=${SA_JSON}
-    export GOOGLE_PROJECT=$project_id
+    EXAMPLE_DIR=examples/single-node
 
-    # Install latest terraform
-    curl -sL 	https://goo.gl/UYp3WG | bash
-    source ${HOME}/.bashrc
-    terraform version
+    TEST_DIR=${BASE_DIR}/${git_src}/${EXAMPLE_DIR}
 
-    BASE_DIR=${PWD}
-    TEST_DIR=${BASE_DIR}/examples/single-node
-
+    # Always destroy on exit.
     function cleanup {
       cd ${TEST_DIR}/ && terraform destroy -input=false -lock=false -auto-approve
     }
     trap cleanup EXIT
 
-    ### Begin Terraform example test
     cd ${TEST_DIR}
 
+    # Install latest terraform
+    curl -sL 	https://goo.gl/UYp3WG | bash
+    source ${HOME}/.bashrc
+    terraform version
+    
+    # Env for terraform google provider
+    export GOOGLE_APPLICATION_CREDENTIALS=${SA_JSON}
+    export GOOGLE_PROJECT=$project_id
+
+    ### Begin Terraform example test
+
+    # Remote backend
     cat > backend.tf <<EOF
     terraform {
       backend "gcs" {
@@ -90,3 +96,20 @@ run:
     terraform workspace select ${env_name} || terraform workspace new ${env_name}
     terraform plan
     terraform apply -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
+
+    ### Begin pull request test
+    if [[ "${git_src}" != "${git_target}" ]]; then
+      OLD_TEST_DIR="${TEST_DIR}"
+      TEST_DIR="${BASE_DIR}/${git_target}/${EXAMPLE_DIR}"
+
+      # Copy remote backend
+      cp "${OLD_TEST_DIR}/backend.tf" "${TEST_DIR}/"
+
+      cd ${TEST_DIR}
+
+      # Run Terraform
+      terraform init -upgrade=true
+      terraform workspace select ${env_name} || terraform workspace new ${env_name}
+      terraform plan
+      terraform apply -input=false -lock=false -auto-approve | tee ${EMAIL}/body-failed
+    fi
