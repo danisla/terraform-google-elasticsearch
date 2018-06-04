@@ -88,5 +88,5 @@ resources:
       port: {{smtp_port}}
       username: {{smtp_username}}
       password: {{smtp_password}}
-    from: concourse@vicnastea.io
+    from: concourse-tf@gcp.solutions
     to: [ {{maintainer_email}} ]
