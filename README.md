@@ -2,7 +2,8 @@
 
 Terraform module for creating Elasticsearch nodes and various cluster topologies.
 
-<img src="https://concourse-tf.gcp.solutions/api/v1/teams/main/pipelines/tf-es-regression/badge" />
+<a href="https://concourse-tf.gcp.solutions/teams/main/pipelines/tf-es-regression" target="_blank">
+<img src="https://concourse-tf.gcp.solutions/api/v1/teams/main/pipelines/tf-es-regression/badge" /></a>
         
 ## Usage
 
