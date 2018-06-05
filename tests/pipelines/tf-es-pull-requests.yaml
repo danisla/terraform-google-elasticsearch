@@ -15,9 +15,9 @@
 jobs:
 
 ###
-# run-example-single-node-prs
+# run-example-single-node-pr
 ###
-- name: run-example-single-node-prs
+- name: run-example-single-node-pr
   serial: true
   plan:
   - get: git
@@ -32,7 +32,7 @@ jobs:
       path: git-pull-requests
       status: pending
   
-  - task: run-example-single-node-pr
+  - task: run-example-single-node-pr-upgrade
     params:
       git_src: git
       git_target: git-pull-requests
@@ -46,17 +46,49 @@ jobs:
       TF_VAR_cluster_name: tf-ci-es-single-node-pr
       TF_VAR_region: us-east4
       TF_VAR_zones: '["us-east4-b"]'
-    on_success:
-      put: git-pull-requests
-      params:
-        path: git-pull-requests
-        status: success
     on_failure:
       put: git-pull-requests
       params:
         path: git-pull-requests
         status: failure
     file: git/tests/tasks/example-es-single-node.yaml
+
+  - task: run-example-single-node-pr-clean-apply
+    params:
+      git_src: git-pull-requests
+      git_target: git-pull-requests
+      service_account_json: {{service_account_json}}
+      project_id: {{project_id}}
+      zone: us-east4-b
+      backend_bucket: {{tf_backend_bucket}}
+      backend_prefix: terraform-google-elasticsearch/
+      env_name: tf-ci-es-single-node-pr
+      TF_VAR_network_name: tf-ci-es-single-node-pr
+      TF_VAR_cluster_name: tf-ci-es-single-node-pr
+      TF_VAR_region: us-east4
+      TF_VAR_zones: '["us-east4-b"]'
+    on_failure:
+      put: git-pull-requests
+      params:
+        path: git-pull-requests
+        status: failure
+    file: git/tests/tasks/example-es-single-node.yaml
+
+###
+# Updates PR with Passed state if all jobs pass
+###
+- name: update-pr-passed
+  plan:
+  - get: git-pull-requests
+    passed:
+    - run-example-single-node-pr
+    trigger: true
+    version: every
+
+  - put: git-pull-requests
+    params:
+      path: git-pull-requests
+      status: success
 
 ###
 # Resource types
