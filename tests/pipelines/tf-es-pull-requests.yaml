@@ -36,10 +36,10 @@ jobs:
     params:
       git_src: git
       git_target: git-pull-requests
-      service_account_json: {{service_account_json}}
-      project_id: {{project_id}}
+      service_account_json: ((pr-project.service_account_json))
+      project_id: ((pr-project.project_id))
       zone: us-east4-b
-      backend_bucket: {{tf_backend_bucket}}
+      backend_bucket: {{backend_bucket}}
       backend_prefix: terraform-google-elasticsearch/
       env_name: tf-ci-es-single-node-pr
       TF_VAR_network_name: tf-ci-es-single-node-pr
@@ -57,10 +57,10 @@ jobs:
     params:
       git_src: git-pull-requests
       git_target: git-pull-requests
-      service_account_json: {{service_account_json}}
-      project_id: {{project_id}}
+      service_account_json: ((pr-project.service_account_json))
+      project_id: ((pr-project.project_id))
       zone: us-east4-b
-      backend_bucket: {{tf_backend_bucket}}
+      backend_bucket: {{backend_bucket}}
       backend_prefix: terraform-google-elasticsearch/
       env_name: tf-ci-es-single-node-pr
       TF_VAR_network_name: tf-ci-es-single-node-pr
@@ -111,13 +111,13 @@ resources:
 - name: git
   type: git
   source:
-    uri: {{tf_es_source_repo}}
-    branch: {{tf_es_source_branch}}
+    uri: ((uri))
+    branch: ((branch))
 
 - name: git-pull-requests
   type: pull-request
   source:
-    access_token: {{github_access_token}}
-    repo:         ((tf_es_source_github_owner))/((tf_es_source_github_repo))
-    base:         {{tf_es_source_branch}}
+    access_token: ((common.github_access_token))
+    repo:         ((github_owner))/((github_repo))
+    base:         ((branch))
     label:        ok-to-test

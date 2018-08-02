@@ -1,0 +1,10 @@
+maintainer_email: disla@google.com
+backend_bucket: concourse-terraform-remote-backend
+
+packer_uri: https://github.com/danisla/elasticsearch-cloud-deploy.git
+packer_branch: gcp
+
+uri: https://github.com/danisla/terraform-google-elasticsearch.git
+branch: master
+github_owner: danisla
+github_repo: terraform-google-elasticsearch

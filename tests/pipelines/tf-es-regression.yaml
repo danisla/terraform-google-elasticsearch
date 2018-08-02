@@ -14,12 +14,98 @@
  
 jobs:
 ###
+# build-images
+###
+- name: build-images
+  serial: true
+  plan:
+  - get: once-a-day
+    trigger: true
+  
+  - get: packer-git
+    trigger: false
+  
+  - task: build-images
+    params:
+      service_account_json: ((regression-project.service_account_json))
+      project_id: ((regression-project.project_id))
+  
+    on_failure:
+      put: send-an-email
+      params:
+        subject: email/subject-failed
+        body: email/body-failed
+
+    config:
+      platform: linux
+      inputs:
+      - name: packer-git
+      outputs:
+      - name: email
+      image_resource:
+        type: docker-image
+        source:
+          repository: google/cloud-sdk
+          tag: alpine
+      params:
+        service_account_json:
+        project_id:
+      image_resource:
+        type: docker-image
+        source:
+          repository: google/cloud-sdk
+          tag: alpine
+      platform: linux
+      inputs:
+      - name: packer-git
+      run:
+        path: bash
+        args:
+        - -exc
+        - |
+          set -x
+          set -e
+
+          SA_JSON=${PWD}/service_account.json
+          cat > ${SA_JSON} <<EOF
+          $service_account_json
+          EOF
+          apk add --update jq curl
+          gcloud auth activate-service-account --key-file=${SA_JSON}
+          gcloud config set project $project_id
+
+          BASE_DIR=${PWD}
+
+          cd packer-git
+
+          # Setup email
+          EMAIL=${BASE_DIR}/email
+          echo "terraform-google-elasticsearch/packer-image: Failed to build image" > ${EMAIL}/subject-failed
+          git --no-pager show > ${EMAIL}/body-failed
+
+          # Install latest packer
+          curl -LO https://gist.githubusercontent.com/danisla/a1d0ba48396920407b468624f17c5961/raw/62c71d472a8886227c23fa65e7ef6a5141a3a7fd/packer-install.sh
+          bash packer-install.sh
+          source ~/.bashrc
+          
+          cd packer
+
+          cp ${SA_JSON} .gcp_account.json
+
+          # Build elasticsearch image
+          packer build -only=googlecompute -var-file=variables.json -var gcp_project_id=${project_id} elasticsearch6-node.packer.json
+
+          # Build kibana image
+          packer build -only=googlecompute -var-file=variables.json -var gcp_project_id=${project_id} kibana6-node.packer.json
+
+###
 # run-example-single-node
 ###
 - name: run-example-single-node
   serial: true
   plan:
   - get: once-a-day
+    passed: ["build-images"]
     trigger: true
 
   - get: git
@@ -29,10 +115,10 @@ jobs:
     params:
       git_src: git
       git_target: git
-      service_account_json: {{service_account_json}}
-      project_id: {{project_id}}
+      service_account_json: ((regression-project.service_account_json))
+      project_id: ((regression-project.project_id))
       zone: us-west1-b
-      backend_bucket: {{tf_backend_bucket}}
+      backend_bucket: {{backend_bucket}}
       backend_prefix: terraform-google-elasticsearch/
       env_name: tf-ci-es-single-node
       TF_VAR_network_name: tf-ci-es-single-node
@@ -72,8 +158,14 @@ resources:
 - name: git
   type: git
   source:
-    uri: {{tf_es_source_repo}}
-    branch: {{tf_es_source_branch}}
+    uri: {{uri}}
+    branch: {{branch}}
+
+- name: packer-git
+  type: git
+  source:
+    uri: {{packer_uri}}
+    branch: {{packer_branch}}
 
 - name: once-a-day
   type: time
@@ -84,9 +176,9 @@ resources:
   type: email
   source:
     smtp:
-      host: {{smtp_host}}
-      port: {{smtp_port}}
-      username: {{smtp_username}}
-      password: {{smtp_password}}
+      host: ((common.smtp_host))
+      port: ((common.smtp_port))
+      username: ((common.smtp_username))
+      password: ((common.smtp_password))
     from: concourse-tf@gcp.solutions
     to: [ {{maintainer_email}} ]

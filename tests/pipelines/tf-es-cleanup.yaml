@@ -1,0 +1,76 @@
+# Copyright 2017 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+jobs:
+
+###
+# cleanup-example-single-node
+###
+- name: cleanup-example-single-node
+  serial: true
+  plan:
+  - get: git
+    trigger: false
+  
+  - task: cleanup
+    params:
+      service_account_json: ((regression-project.service_account_json))
+      project_id: ((regression-project.project_id))
+      env_name: tf-ci-es-single-node
+      example_dir: examples/single-node
+    file: git/tests/tasks/cleanup.yaml
+
+###
+# cleanup-example-single-node-pr
+###
+- name: cleanup-example-single-node-pr
+  serial: true
+  plan:
+  - get: git
+    trigger: false
+  
+  - task: cleanup
+    params:
+      service_account_json: ((regression-project.service_account_json))
+      project_id: ((regression-project.project_id))
+      env_name: tf-ci-es-single-node-pr
+      example_dir: examples/single-node
+    file: git/tests/tasks/cleanup.yaml
+
+###
+# Resource types
+###
+resource_types:
+- name: git
+  type: docker-image
+  source:
+    repository: concourse/git-resource
+
+###
+# Resources
+###
+resources:
+- name: git
+  type: git
+  source:
+    uri: {{uri}}
+    branch: {{branch}}
+
+groups:
+- name: regression
+  jobs:
+  - cleanup-example-single-node
+- name: pull-requests
+  jobs:
+  - cleanup-example-single-node-pr
