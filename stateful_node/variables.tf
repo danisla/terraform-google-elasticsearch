@@ -132,7 +132,8 @@ variable "service_account_scopes" {
 variable "attached_disk_1" {
   description = "First attached disk"
   type        = "map"
-  default     = {
+
+  default = {
     size = 50
     type = "pd-standard"
   }
@@ -141,7 +142,8 @@ variable "attached_disk_1" {
 variable "attached_disk_2" {
   description = "Second attached disk"
   type        = "map"
-  default     = {
+
+  default = {
     size = 50
     type = "pd-standard"
   }
@@ -150,7 +152,8 @@ variable "attached_disk_2" {
 variable "attached_disk_3" {
   description = "Third attached disk"
   type        = "map"
-  default     = {
+
+  default = {
     size = 50
     type = "pd-standard"
   }
@@ -159,7 +162,8 @@ variable "attached_disk_3" {
 variable "attached_disk_4" {
   description = "Fourth attached disk"
   type        = "map"
-  default     = {
+
+  default = {
     size = 50
     type = "pd-standard"
   }

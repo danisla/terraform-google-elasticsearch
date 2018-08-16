@@ -26,7 +26,8 @@ data "template_file" "node-startup-script" {
 }
 
 module "node" {
-  source                    = "github.com/GoogleCloudPlatform/terraform-google-managed-instance-group"
+  source                    = "GoogleCloudPlatform/managed-instance-group/google"
+  version                   = "1.1.13"
   project                   = "${var.project == "" ? data.google_client_config.current.project : var.project}"
   region                    = "${var.region}"
   zonal                     = false
@@ -48,6 +49,7 @@ module "node" {
   startup_script            = "${data.template_file.node-startup-script.rendered}"
   wait_for_instances        = true
   update_strategy           = "NONE"
+  http_health_check         = false
 }
 
 data "google_compute_region_instance_group" "default" {

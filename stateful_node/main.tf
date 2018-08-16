@@ -34,10 +34,9 @@ resource "google_compute_instance" "node" {
   machine_type              = "${var.machine_type}"
   min_cpu_platform          = "${var.min_cpu_platform}"
   allow_stopping_for_update = true
-  
+
   // Local SSD disk
-  scratch_disk {
-  }
+  scratch_disk {}
 
   boot_disk {
     auto_delete = "${var.boot_disk_auto_delete}"
@@ -74,7 +73,7 @@ resource "google_compute_instance" "data_node" {
   machine_type              = "${var.machine_type}"
   min_cpu_platform          = "${var.min_cpu_platform}"
   allow_stopping_for_update = true
-  
+
   attached_disk = [
     {
       source      = "${element(google_compute_disk.disk-1.*.self_link, count.index)}"
@@ -97,10 +96,9 @@ resource "google_compute_instance" "data_node" {
       mode        = "READ_WRITE"
     },
   ]
-  
+
   // Local SSD disk
-  scratch_disk {
-  }
+  scratch_disk {}
 
   boot_disk {
     auto_delete = "${var.boot_disk_auto_delete}"
@@ -135,6 +133,7 @@ resource "google_compute_disk" "disk-1" {
   zone  = "${element(var.zones, count.index % length(var.zones))}"
   type  = "${lookup(var.attached_disk_1, "type")}"
   size  = "${lookup(var.attached_disk_1, "size")}"
+
   labels {
     es_cluster = "${var.cluster_name}"
   }
@@ -146,6 +145,7 @@ resource "google_compute_disk" "disk-2" {
   zone  = "${element(var.zones, count.index % length(var.zones))}"
   type  = "${lookup(var.attached_disk_2, "type")}"
   size  = "${lookup(var.attached_disk_2, "size")}"
+
   labels {
     es_cluster = "${var.cluster_name}"
   }
@@ -157,6 +157,7 @@ resource "google_compute_disk" "disk-3" {
   zone  = "${element(var.zones, count.index % length(var.zones))}"
   type  = "${lookup(var.attached_disk_3, "type")}"
   size  = "${lookup(var.attached_disk_3, "size")}"
+
   labels {
     es_cluster = "${var.cluster_name}"
   }
@@ -168,6 +169,7 @@ resource "google_compute_disk" "disk-4" {
   zone  = "${element(var.zones, count.index % length(var.zones))}"
   type  = "${lookup(var.attached_disk_4, "type")}"
   size  = "${lookup(var.attached_disk_4, "size")}"
+
   labels {
     es_cluster = "${var.cluster_name}"
   }
@@ -183,7 +185,7 @@ resource "google_compute_firewall" "cluster-ssh" {
   }
 
   source_ranges = ["0.0.0.0/0"]
-  target_tags = ["${var.name}-ssh"]
+  target_tags   = ["${var.name}-ssh"]
 }
 
 resource "google_compute_firewall" "cluster" {

@@ -17,7 +17,8 @@ data "template_file" "node-startup-script" {
 }
 
 module "kibana" {
-  source                    = "github.com/GoogleCloudPlatform/terraform-google-managed-instance-group"
+  source                    = "GoogleCloudPlatform/managed-instance-group/google"
+  version                   = "1.1.13"
   project                   = "${var.project == "" ? data.google_client_config.current.project : var.project}"
   region                    = "${var.region}"
   zonal                     = false
@@ -37,6 +38,7 @@ module "kibana" {
   service_port_name         = "http"
   startup_script            = "${data.template_file.node-startup-script.rendered}"
   wait_for_instances        = true
+  http_health_check         = false
   update_strategy           = "ROLLING_UPDATE"
 
   rolling_update_policy = [
