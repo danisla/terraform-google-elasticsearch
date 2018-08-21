@@ -7,7 +7,8 @@ resource "google_compute_address" "es_client_ilb" {
 
 // Client internal load balancer
 module "es_client_ilb" {
-  source            = "github.com/GoogleCloudPlatform/terraform-google-lb-internal"
+  source            = "GoogleCloudPlatform/lb-internal/google"
+  version           = "1.0.4"
   region            = "${var.region}"
   name              = "${var.cluster_name}-client-ilb"
   ip_address        = "${google_compute_address.es_client_ilb.address}"
@@ -35,7 +36,8 @@ resource "google_compute_address" "es_indexing_ilb" {
 
 // Indexing internal load balancer
 module "es_indexing_ilb" {
-  source            = "github.com/GoogleCloudPlatform/terraform-google-lb-internal"
+  source            = "GoogleCloudPlatform/lb-internal/google"
+  version           = "1.0.4"
   region            = "${var.region}"
   name              = "${var.cluster_name}-indexing-ilb"
   ip_address        = "${google_compute_address.es_indexing_ilb.address}"
