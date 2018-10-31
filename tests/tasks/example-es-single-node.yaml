@@ -71,7 +71,7 @@ run:
     git --no-pager show > ${EMAIL}/body-failed
 
     # Install latest terraform
-    curl -sL 	https://goo.gl/UYp3WG | bash
+    ../terraform-install.sh
     source ${HOME}/.bashrc
     terraform version
     
