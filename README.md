@@ -1,5 +1,7 @@
 # Elasticsearch Terraform Module
 
+## This module is obsolete for terraform version > v0.12 - Not maintained anymore.
+
 Terraform module for creating Elasticsearch nodes and various cluster topologies.
 
 <a href="https://concourse-tf.gcp.solutions/teams/main/pipelines/tf-es-regression" target="_blank">
