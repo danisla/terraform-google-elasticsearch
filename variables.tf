@@ -20,8 +20,8 @@ variable "subnetwork" {
 
 variable "access_config" {
   description = "The access config block for the instances. Set to [] to remove external IP."
-  type        = "list"
-  default     = [{}]
+  type        = list(string)
+  default     = []
 }
 
 variable "network_ip" {
@@ -31,7 +31,7 @@ variable "network_ip" {
 
 variable "node_tags" {
   description = "Additional compute instance network tags for the nodes."
-  type        = "list"
+  type        = list(string)
   default     = []
 }
 
@@ -41,7 +41,8 @@ variable "region" {
 
 variable "zones" {
   description = "Which zones to deloy instances to."
-  type        = "list"
+  type        = list(string)
+  default     = []
 }
 
 variable "image_family" {
